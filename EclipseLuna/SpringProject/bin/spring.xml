@@ -1,0 +1,110 @@
+<?xml version="1.0" encoding="UTF-8"?>
+	   
+<beans xmlns="http://www.springframework.org/schema/beans"
+    xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+    xmlns:context="http://www.springframework.org/schema/context"
+    xsi:schemaLocation="http://www.springframework.org/schema/beans
+    http://www.springframework.org/schema/beans/spring-beans.xsd
+    http://www.springframework.org/schema/context
+    http://www.springframework.org/schema/context/spring-context.xsd">
+    <!-- default-init-method="InitMethod" default-destroy-method="DestroyMethod"> -->
+    
+   <context:annotation-config/>
+   <context:component-scan base-package="org.imran.kartillion" />		   
+	   					   
+    <bean id="parenttriangle" class="org.imran.kartillion.Triangle" name="triangle-name">
+        <!-- <property name="type" value="Equilateral" />
+        <constructor-arg index="0" value="Equilateral"/>
+        <constructor-arg index="1" value="20"/>  -->
+        
+        <!-- <property name="pointA" ref="pointA"/>                
+        <property name="pointB" ref="pointB" />
+        <property name="pointC" ref="pointC" /> -->
+        
+        <!-- <property name="points">
+        	<list>
+        		<ref bean="pointA"/>
+        		<ref bean="pointB"/>
+        		<ref bean="pointC"/>
+        	</list>
+        </property> -->
+        
+        <!-- <property name="pointB">
+        	<bean class="org.imran.kartillion.Point">
+		    	<property name="x" value="-20" />
+		    	<property name="y" value="0" />
+		    </bean>
+        </property>
+        <property name="pointC">
+			<bean class="org.imran.kartillion.Point">
+		    	<property name="x" value="0" />
+		    	<property name="y" value="-20" />
+		    </bean>        
+        </property>  -->
+        
+        <property name="points">
+        <list>
+        	<ref bean="pointA"/>
+        </list>
+        </property>
+        
+    </bean>  
+    
+    <bean id="triangle1" class="org.imran.kartillion.Triangle" parent="parenttriangle" >
+    	<property name="points">
+    	<list merge="true">
+    		<ref bean="pointB"></ref>
+    	</list>
+    	</property>            
+    </bean>
+    
+    <bean id="triangle2" class="org.imran.kartillion.Triangle" parent="triangle1" >    	
+        <property name="points">
+        <list merge="true">
+        	<ref bean="pointC"/>
+        </list>
+        </property>    
+    </bean>  
+    
+    <bean id="pointA" class="org.imran.kartillion.Point">
+    	<qualifier value="circleRelated" />
+    	<property name="x" value="${pointA.pointX}" />
+    	<property name="y" value="${pointA.pointY}" />
+    	<!-- <property name="x" value="0" />
+    	<property name="y" value="0" /> -->
+    </bean>
+    
+    <bean id="pointB" class="org.imran.kartillion.Point">
+    	<property name="x" value="-20" />
+    	<property name="y" value="0" />
+    </bean>
+    
+    <bean id="pointC" class="org.imran.kartillion.Point">
+    	<property name="x" value="0" />
+    	<property name="y" value="-20" />
+    </bean>
+    
+    <alias name="parenttriangle" alias="triangle-alias"/>
+    
+    <bean class="org.imran.kartillion.DisplayNameBeanPostProcessor" />
+    <bean class="org.imran.kartillion.MyBeanFactoryPostProcessor"/>
+    
+     <bean class="org.springframework.beans.factory.config.PropertyPlaceholderConfigurer">
+    	<property name="locations" value="pointsconfig.properties" />
+    </bean>
+    
+    <bean id="messageSource" class="org.springframework.context.support.ResourceBundleMessageSource">
+    	<property name="basenames">
+    	<list>
+    	<value>mymessages</value>
+    	</list>
+    	</property>
+    </bean>
+    
+    <bean id="circle" class="org.imran.kartillion.Circle" scope="prototype">
+    	<property name="center" ref="pointA" />    	
+    </bean>
+    
+    
+    
+</beans>
